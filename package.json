@@ -1,0 +1,27 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Simple representation of a tic-tac-toe game",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/somemarsupials/tic-tac-toe.git"
+  },
+  "author": "Theo Breuer-Weil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/somemarsupials/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/somemarsupials/tic-tac-toe#readme",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0",
+    "sinon": "^4.1.3"
+  }
+}
