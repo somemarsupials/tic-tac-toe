@@ -13,10 +13,22 @@ describe('Square', function() {
 
   describe('#new', function() {
     it('is created with x', function() {
-      expect(square.x).to.equal(1);
+      expect(square._x).to.equal(1);
     });
 
     it('is created with y', function() {
+      expect(square._y).to.equal(2);
+    });
+  });
+
+  describe('#x (get)', function() {
+    it('returns _x', function() {
+      expect(square.x).to.equal(1);
+    });
+  });
+
+  describe('#y (get)', function() {
+    it('returns _y', function() {
       expect(square.y).to.equal(2);
     });
   });

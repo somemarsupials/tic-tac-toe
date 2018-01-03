@@ -2,12 +2,20 @@
 
 class Square {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    this._x = x;
+    this._y = y;
   };
 
   isTaken() {
     return Boolean(this._move);
+  };
+
+  get x() {
+    return this._x;
+  };
+
+  get y() {
+    return this._y;
   };
 
   get move() {
