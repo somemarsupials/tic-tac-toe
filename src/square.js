@@ -19,4 +19,9 @@ class Square {
   };
 };
 
+function makeSquare(x, y, constructor = Square) {
+  return new constructor(x, y);
+};
+
+module.exports.makeSquare = makeSquare;
 module.exports.Square = Square;

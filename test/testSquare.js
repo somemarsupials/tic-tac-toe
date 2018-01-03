@@ -59,3 +59,16 @@ describe('Square', function() {
     });
   });
 });
+
+describe('#makeSquare', function() {
+  let square;
+
+  beforeEach(function() {
+    square = sinon.spy();
+    squareModule.makeSquare(2, 1, square);
+  });
+
+  it('passes parameters', function() {
+    expect(square.calledWith(2, 1)).to.be.true;
+  });
+});
