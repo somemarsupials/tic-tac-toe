@@ -1,27 +1,33 @@
 'use strict';
 
 const squareModule = require('./square');
+const selectionModule = require('./selection');
 
 class Grid {
-  constructor(length, squareConstructor = squareModule.makeSquare) {
+  constructor(length, constructor = squareModule.makeSquare) {
     this._length = length;
-    this._construct(length, squareConstructor);
+    this._construct(length, constructor);
   };
 
   get length() {
     return this._length;
   };
 
-  get columns() {
-    return this._columns;
+  filter(func, constructor = selectionModule.makeSelection) {
+    let squares = this._asArray().filter(func);
+    return constructor(squares);
   };
 
   index(x, y) {
-    try {
-      return this._columns[x][y];
-    } catch (error) {
-      return;
-    };
+    return this._columns[x] ? this._columns[x][y] : undefined;
+  };
+
+  move(x, y, value) {
+    this.index(x, y).move(value);
+  };
+
+  _asArray() {
+    return [].concat.apply([], this._columns);
   };
 
   _constructRow(columnNumber, length, constructor) {

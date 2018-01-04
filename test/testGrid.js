@@ -35,6 +35,69 @@ describe('Grid', function() {
     });
   });
 
+  describe('#length (get)', function() {
+    it('returns _length', function() {
+      expect(grid.length).to.equal(0);
+    });
+  });
+
+  describe('#filter', function() {
+    let selectionConstructor;
+    let arr;
+    let outcome;
+
+    beforeEach(function() {
+      selectionConstructor = sinon.stub().returns(0);  
+      arr = { filter: sinon.stub().returns(1) };
+      sinon.stub(grid, '_asArray').returns(arr);
+      outcome = grid.filter(2, selectionConstructor);
+    });
+
+    it('applies filter function', function() {
+      expect(arr.filter.calledWith(2)).to.be.true;
+    });
+
+    it('calls constructor with filtered array', function() {
+      expect(selectionConstructor.calledWith(1)).to.be.true;
+    });
+
+    it('returns selection', function() {
+      expect(outcome).to.equal(0);
+    });
+  });
+  
+  describe('#index', function() {
+    beforeEach(function() {
+      grid._columns = [[0, 0], [0, 1], [0, 0]];
+    });
+
+    it('retrieves item at given co-ordinates', function() {
+      expect(grid.index(1, 1)).to.equal(1);
+    });
+
+    it('returns undefined if location does not exist', function() {
+      expect(grid.index(5, 5)).to.be.undefined;
+    });
+  });
+
+  describe('#move', function() {
+    let square;
+
+    beforeEach(function() {
+      square = { move: sinon.spy() }
+      sinon.stub(grid, 'index').returns(square);
+      grid.move(1, 2, 3);
+    });
+
+    it('passes indices to #index', function() {
+      expect(grid.index.calledWith(1, 2)).to.be.true;
+    });
+
+    it('sets square move to value', function() {
+      expect(square.move.calledWith(3)).to.be.true;
+    });
+  });
+
   describe('#_constructRow', function() {
     let row;
     let calls;
@@ -71,17 +134,13 @@ describe('Grid', function() {
     });
   });
 
-  describe('#index', function() {
+  describe('#_asArray', function() {
     beforeEach(function() {
       grid._columns = [[0, 0], [0, 1], [0, 0]];
     });
 
-    it('retrieves item at given co-ordinates', function() {
-      expect(grid.index(1, 1)).to.equal(1);
-    });
-
-    it('returns undefined if location does not exist', function() {
-      expect(grid.index(5, 5)).to.be.undefined;
+    it('flattens array', function() {
+      expect(grid._asArray()).to.have.same.members([0, 0, 0, 1, 0 ,0]);
     });
   });
 });
