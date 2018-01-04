@@ -4,9 +4,9 @@ const squareModule = require('./square');
 const selectionModule = require('./selection');
 
 class Grid {
-  constructor(length, constructor = squareModule.makeSquare) {
+  constructor(length, array) {
     this._length = length;
-    this._construct(length, constructor);
+    this._columns = array;
   };
 
   get length() {
@@ -30,25 +30,31 @@ class Grid {
     return [].concat.apply([], this._columns);
   };
 
-  _constructRow(columnNumber, length, constructor) {
-    let newRow = [];
-    for (let row = 0; row < length; row++) {
-      newRow.push(constructor(columnNumber, row));
+};
+
+class GridBuilder {
+  constructRow(columnId, length, constructor) {
+    let row = [];
+    for (let rowId = 0; rowId < length; rowId++) {
+      row.push(constructor(columnId, rowId));
     };
-    return newRow;
+    return row;
   };
 
-  _construct(length, constructor) {
-    this._columns = [];
-    for (let column = 0; column < length; column++) {
-      this._columns.push(this._constructRow(column, length, constructor));
+  construct(length, constructor = squareModule.makeSquare) {
+    let columns = [];
+    for (let columnId = 0; columnId < length; columnId++) {
+      columns.push(this.constructRow(columnId, length, constructor));
     };
+    return columns;
   };
 };
 
-function makeGrid(length, constructor = Grid) {
-  return new constructor(length);
+function makeGrid(length, constructor = Grid, builder = new GridBuilder()) {
+  let array = builder.construct(length, constructor);
+  return new constructor(length, array);
 };
 
 module.exports.makeGrid = makeGrid;
+module.exports.GridBuilder = GridBuilder;
 module.exports.Grid = Grid;

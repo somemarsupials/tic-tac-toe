@@ -5,39 +5,27 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 
 describe('Grid', function() {
+  let array;
   let grid;
-  let square;
 
   beforeEach(function() {
-    square = sinon.stub().returns(0);
-    grid = new gridModule.Grid(0, square);
+    array = sinon.spy();
+    grid = new gridModule.Grid(3, array);
   });
 
   describe('#new', function() {
-    let original;
-
-    beforeEach(function() {
-      original = gridModule.Grid.prototype._construct;
-      gridModule.Grid.prototype._construct = sinon.spy();
-      grid = new gridModule.Grid(3, square);
-    });
-
-    afterEach(function() {
-      gridModule.Grid.prototype._construct = original;
-    });
-
     it('has length', function() {
       expect(grid._length).to.equal(3);
     });
 
-    it('calls _construct', function() {
-      expect(grid._construct.calledWith(3, square)).to.be.true;
+    it('has columns', function() {
+      expect(grid._columns).to.equal(array);
     });
   });
 
   describe('#length (get)', function() {
     it('returns _length', function() {
-      expect(grid.length).to.equal(0);
+      expect(grid.length).to.equal(3);
     });
   });
 
@@ -98,12 +86,31 @@ describe('Grid', function() {
     });
   });
 
-  describe('#_constructRow', function() {
+  describe('#_asArray', function() {
+    beforeEach(function() {
+      grid._columns = [[0, 0], [0, 1], [0, 0]];
+    });
+
+    it('flattens array', function() {
+      expect(grid._asArray()).to.have.same.members([0, 0, 0, 1, 0 ,0]);
+    });
+  });
+});
+
+describe('GridBuilder', function() {
+  let builder;
+  let square;
+
+  beforeEach(function() {
+    builder = new gridModule.GridBuilder();
+    square = sinon.stub().returns(0);
+  });
+
+  describe('#constructRow', function() {
     let row;
-    let calls;
 
     beforeEach(function() {
-      row = grid._constructRow(1, 3, square);
+      row = builder.constructRow(1, 3, square);
     });
 
     it('calls constructor 3 times', function() {
@@ -117,43 +124,37 @@ describe('Grid', function() {
     });
   });
 
-  describe('#_construct', function() {
+  describe('#construct', function() {
+    let columns;
+
     beforeEach(function() {
-      sinon.stub(grid, '_constructRow').returns(0);
-      grid._construct(3, square);
+      sinon.stub(builder, 'constructRow').returns(0);
+      columns = builder.construct(3, square);
     });
 
     it('calls #_constructRow for each column', function() {
       for (let c = 0; c < 3; c++) {
-        expect(grid._constructRow.calledWith(c, 3, square)).to.be.true;
+        expect(builder.constructRow.calledWith(c, 3, square)).to.be.true;
       };
     });
 
     it('puts rows in array', function() {
-      expect(grid._columns).to.have.same.members([0, 0, 0]);
-    });
-  });
-
-  describe('#_asArray', function() {
-    beforeEach(function() {
-      grid._columns = [[0, 0], [0, 1], [0, 0]];
-    });
-
-    it('flattens array', function() {
-      expect(grid._asArray()).to.have.same.members([0, 0, 0, 1, 0 ,0]);
+      expect(columns).to.have.same.members([0, 0, 0]);
     });
   });
 });
 
 describe('#makeGrid', function() {
   let grid;
+  let builder;
 
   beforeEach(function() {
     grid = sinon.spy();
-    gridModule.makeGrid(5, grid);
+    builder = { construct: sinon.stub().returns(0) };
+    gridModule.makeGrid(5, grid, builder);
   });
 
   it('passes parameters', function() {
-    expect(grid.calledWith(5)).to.be.true;
+    expect(grid.calledWith(5, 0)).to.be.true;
   });
 });
